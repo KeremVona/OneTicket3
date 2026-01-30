@@ -1,9 +1,6 @@
-import { Role, Field, TicketStatus, Prisma } from "@prisma/client";
+import { Role, Field } from "@prisma/client";
 import { prisma } from "../../prisma.js";
-
-// --------------------------------------
-// 1. User Registration Logic
-// --------------------------------------
+import { getDomainName } from "../../utils/helper.js";
 
 interface RegisterInput {
   email: string;
@@ -15,27 +12,28 @@ interface RegisterInput {
 export const registerUser = async (input: RegisterInput) => {
   let role: Role = Role.EMPLOYEE;
   let field: Field | null = null;
+  const domain = getDomainName(input.email);
 
-  // 1. Check for Admin
   if (input.email.endsWith("@admin.com")) {
     role = Role.ADMIN;
-  }
-  // 2. Check for Technician
-  else if (input.isTechnicianCheckbox) {
-    if (input.email.endsWith("@hardware.com")) {
-      role = Role.TECHNICIAN;
-      field = Field.HARDWARE;
-    } else if (input.email.endsWith("@software.com")) {
-      role = Role.TECHNICIAN;
-      field = Field.SOFTWARE;
-    } else {
+  } else if (input.isTechnicianCheckbox) {
+    if (!domain) {
+      throw new Error("Invalid email format");
+    }
+
+    role = Role.TECHNICIAN;
+
+    const fieldKey = domain.toUpperCase() as keyof typeof Field;
+
+    if (!Field[fieldKey]) {
       throw new Error(
-        "Technician email must end in @hardware.com or @software.com",
+        "Technician email must end in a valid field domain (e.g. @hardware.com, @software.com)",
       );
     }
+
+    field = Field[fieldKey];
   }
 
-  // 3. Make User
   const hashedPassword = input.password;
 
   return await prisma.user.create({
@@ -47,25 +45,6 @@ export const registerUser = async (input: RegisterInput) => {
       field: field,
     },
   });
-};
-
-// --------------------------------------
-// 2. Login User
-// --------------------------------------
-
-export const loginUser = async (email: string, passwordPlain: string) => {
-  const user = await prisma.user.findUnique({
-    where: { email },
-  });
-
-  if (!user) throw new Error("User not found");
-
-  // TODO: Compare password (e.g. await bcrypt.compare(passwordPlain, user.password))
-  const isPasswordValid = passwordPlain === user.password;
-
-  if (!isPasswordValid) throw new Error("Invalid password");
-
-  return user; // Return user to generate JWT token usually
 };
 
 export const getUser = async (email: string) => {

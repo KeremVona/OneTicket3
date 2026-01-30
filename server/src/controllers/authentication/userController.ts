@@ -1,0 +1,120 @@
+import { type Request, type Response } from "express";
+import bcrypt from "bcrypt";
+import jwtGenerator from "../../utils/jwtGenerator.js";
+import {
+  getUser,
+  getUserById,
+  registerUser,
+} from "../../services/authentication/userService.js";
+
+interface RegisterRequestBody {
+  username: string;
+  email: string;
+  password: string;
+  isTechnician: boolean;
+}
+
+interface LoginRequestBody {
+  email: string;
+  password: string;
+}
+
+interface GetIdRequestBody {
+  id: number;
+}
+
+export const registerHandler = async (
+  req: Request<{}, {}, RegisterRequestBody>,
+  res: Response,
+) => {
+  const { username, email, password, isTechnician } = req.body;
+  const send = {
+    email: email,
+    password: password,
+    name: username,
+    isTechnicianCheckbox: isTechnician,
+  };
+
+  try {
+    const user = await getUser(email);
+    console.log("register request received", user);
+
+    if (user != 0) {
+      return res.status(401).send("User already exists");
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const bcryptPassword = await bcrypt.hash(password, salt);
+
+    send.password = bcryptPassword;
+
+    let newUser = await registerUser(send);
+    console.log("newUser ", newUser);
+
+    const jwtToken = jwtGenerator(newUser.id, newUser.username);
+    jwtToken && console.log("token generated");
+
+    return res.json({ jwtToken });
+  } catch (err) {
+    console.error("Server error - registerHandler");
+    if (err instanceof Error) {
+      return res.status(500).send("Server error");
+    }
+  }
+};
+
+export const loginHandler = async (
+  req: Request<{}, {}, LoginRequestBody>,
+  res: Response,
+) => {
+  const { email, password } = req.body;
+  try {
+    const user = await getUser(email);
+
+    if (user === 0) {
+      return res.status(401).json("Invalid email");
+    }
+
+    const validPassword = bcrypt.compare(password, user.password);
+
+    if (!validPassword) {
+      return res.status(401).json("Invalid pasword");
+    }
+
+    const jwtToken = jwtGenerator(user.id, user.username);
+
+    return res.json({ jwtToken });
+  } catch (err) {
+    console.error("Server error - loginHandler");
+    if (err instanceof Error) {
+      return res.status(500).send("Server error");
+    }
+  }
+};
+
+export const verifyHandler = async (res: Response) => {
+  try {
+    return res.json(true);
+  } catch (err) {
+    console.error("Server error - verifyHandler");
+    if (err instanceof Error) {
+      return res.status(500).send("Server error");
+    }
+  }
+};
+
+export const getUserIdHandler = async (
+  req: Request<{}, {}, GetIdRequestBody>,
+  res: Response,
+) => {
+  try {
+    const { id } = req.body;
+
+    const user = await getUserById(id);
+
+    return res.json(user);
+  } catch (err) {
+    console.error("Server error - getUserIdHandler");
+    return res.status(500).send("Server error");
+  }
+};

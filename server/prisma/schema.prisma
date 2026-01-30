@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// --------------------------------------
+// Enums
+// --------------------------------------
+
+enum Role {
+  EMPLOYEE
+  TECHNICIAN
+  ADMIN
+}
+
+enum Field {
+  HARDWARE
+  SOFTWARE
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  FIXED
+  CLOSED
+}
+
+// --------------------------------------
+// Models
+// --------------------------------------
+
+model User {
+  id       String  @id @default(uuid())
+  email    String  @unique
+  password String
+  name     String?
+
+  role  Role   @default(EMPLOYEE)
+  field Field? // Only relevant for Technicians (Hardware vs Software)
+
+  // Relations
+  ticketsMade     Ticket[] @relation("TicketMaker")
+  ticketsAssigned Ticket[] @relation("TicketAssignee")
+
+  madeAt    DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Ticket {
+  id          String       @id @default(uuid())
+  title       String
+  description String
+  status      TicketStatus @default(OPEN)
+
+  // The category of the problem (e.g. Mouse = Hardware)
+  field Field
+
+  // Relations
+  makerId String
+  maker   User   @relation("TicketMaker", fields: [makerId], references: [id])
+
+  assigneeId String?
+  assignee   User?   @relation("TicketAssignee", fields: [assigneeId], references: [id])
+
+  // Review System (Filled only when status is CLOSED)
+  reviewRating  Int? // 1-5 scale
+  reviewComment String?
+
+  madeAt    DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -1,12 +1,33 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import "./Register.css";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { register, reset } from "../../features/auth/authSlice";
 
 const Register = () => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const { user, isLoading, isError, isSuccess, message } = useAppSelector(
+    (state) => state.auth,
+  );
+
+  useEffect(() => {
+    if (isError) {
+      alert(message);
+    }
+    if (isSuccess || user) {
+      navigate("/home");
+    }
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -17,37 +38,20 @@ const Register = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      navigate("/home");
-    }
-  }, [navigate]);
-
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
-    try {
-      const response = await registerUser(formData);
-
-      const { jwtToken } = response.data;
-
-      localStorage.setItem("token", jwtToken);
-      // TODO:
-      // Add a message that displays that the user is going to be navigated
-      setTimeout(() => {
-        navigate("/home");
-      }, 1000);
-    } catch (err) {
-      if (err instanceof Error) {
-        console.error(err.message);
-      }
-    }
+    const name = formData.username;
+    const email = formData.email;
+    const password = formData.password;
+    dispatch(register({ name, email, password }));
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="login-container">
-      <form className="login-form">
+      <form onSubmit={handleSubmit} className="login-form">
         <h1>Login</h1>
 
         <div className="form-group">

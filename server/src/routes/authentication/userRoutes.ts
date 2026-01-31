@@ -4,10 +4,9 @@ import {
   loginHandler,
   verifyHandler,
   getUserIdHandler,
-} from "../../controllers/authentication/userController.js";
-import validInfo from "../../middlewares/validInfo.js";
-import authorize from "../../middlewares/authorization.js";
-
+} from "../../controllers/authentication/userController";
+import validInfo from "../../middlewares/validInfo";
+import authorize from "../../middlewares/authorization";
 const router = express.Router();
 
 router.post("/register", validInfo, registerHandler);

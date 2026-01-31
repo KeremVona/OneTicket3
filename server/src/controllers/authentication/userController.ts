@@ -1,11 +1,11 @@
 import { type Request, type Response } from "express";
 import bcrypt from "bcrypt";
-import jwtGenerator from "../../utils/jwtGenerator.js";
+import jwtGenerator from "../../utils/jwtGenerator";
 import {
   getUser,
   getUserById,
   registerUser,
-} from "../../services/authentication/userService.js";
+} from "../../services/authentication/userService";
 
 interface RegisterRequestBody {
   username: string;
@@ -20,7 +20,7 @@ interface LoginRequestBody {
 }
 
 interface GetIdRequestBody {
-  id: number;
+  id: string;
 }
 
 export const registerHandler = async (
@@ -51,7 +51,7 @@ export const registerHandler = async (
     let newUser = await registerUser(send);
     console.log("newUser ", newUser);
 
-    const jwtToken = jwtGenerator(newUser.id, newUser.username);
+    const jwtToken = jwtGenerator(newUser.id, newUser.name!);
     jwtToken && console.log("token generated");
 
     return res.json({ jwtToken });
@@ -81,7 +81,7 @@ export const loginHandler = async (
       return res.status(401).json("Invalid pasword");
     }
 
-    const jwtToken = jwtGenerator(user.id, user.username);
+    const jwtToken = jwtGenerator(user.id, user.name!);
 
     return res.json({ jwtToken });
   } catch (err) {

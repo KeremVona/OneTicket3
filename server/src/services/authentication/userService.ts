@@ -1,6 +1,6 @@
 import { Role, Field } from "@prisma/client";
-import { prisma } from "../../prisma.js";
-import { getDomainName } from "../../utils/helper.js";
+import { prisma } from "../../prisma";
+import { getDomainName } from "../../utils/helper";
 
 interface RegisterInput {
   email: string;
@@ -55,7 +55,7 @@ export const getUser = async (email: string) => {
   return 0;
 };
 
-export const getUserById = async (id: number) => {
+export const getUserById = async (id: string) => {
   const user = await prisma.user.findUnique({ where: { id: id } });
   if (user) {
     return user;

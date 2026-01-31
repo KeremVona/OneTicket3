@@ -52,7 +52,19 @@ const Register = () => {
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit} className="login-form">
-        <h1>Login</h1>
+        <h1>Register</h1>
+
+        <div className="form-group">
+          <label htmlFor="name">Name</label>
+          <input
+            type="text"
+            id="username"
+            name="name"
+            value={formData.username}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
         <div className="form-group">
           <label htmlFor="email">Email</label>

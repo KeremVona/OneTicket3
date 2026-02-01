@@ -6,9 +6,10 @@ import { register, reset } from "../../features/auth/authSlice";
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    username: "",
+    name: "",
     email: "",
     password: "",
+    isTechnician: false,
   });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -40,10 +41,14 @@ const Register = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const name = formData.username;
+    const name = formData.name;
     const email = formData.email;
     const password = formData.password;
-    dispatch(register({ name, email, password }));
+    const isTechnician = formData.isTechnician;
+    dispatch(register({ name, email, password, isTechnician }));
+    setTimeout(() => {
+      navigate("/home");
+    }, 1000);
   };
 
   if (isLoading) {
@@ -60,8 +65,24 @@ const Register = () => {
             type="text"
             id="username"
             name="name"
-            value={formData.username}
+            value={formData.name}
             onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="name">Are you a technician?</label>
+          <input
+            type="checkbox"
+            id="username"
+            name="isTechnician"
+            onChange={() =>
+              setFormData((prev) => ({
+                ...prev,
+                isTechnician: !prev.isTechnician,
+              }))
+            }
             required
           />
         </div>

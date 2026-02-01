@@ -11,11 +11,12 @@ function jwtGenerator(user_id: string, user_name: string) {
     },
   };
 
-  console.log(user_id, user_name);
+  // console.log(user_id, user_name);
 
   const secret = process.env.Secret;
 
   if (!secret) {
+    console.log("Secret not in .env");
     throw new Error("Secret not in .env");
   }
 

@@ -8,7 +8,7 @@ import {
 } from "../../services/authentication/userService";
 
 interface RegisterRequestBody {
-  username: string;
+  name: string;
   email: string;
   password: string;
   isTechnician: boolean;
@@ -27,17 +27,16 @@ export const registerHandler = async (
   req: Request<{}, {}, RegisterRequestBody>,
   res: Response,
 ) => {
-  const { username, email, password, isTechnician } = req.body;
+  const { name, email, password, isTechnician } = req.body;
   const send = {
     email: email,
     password: password,
-    name: username,
+    name: name,
     isTechnicianCheckbox: isTechnician,
   };
 
   try {
     const user = await getUser(email);
-    console.log("register request received", user);
 
     if (user != 0) {
       return res.status(401).send("User already exists");
@@ -47,12 +46,9 @@ export const registerHandler = async (
     const bcryptPassword = await bcrypt.hash(password, salt);
 
     send.password = bcryptPassword;
-
     let newUser = await registerUser(send);
-    console.log("newUser ", newUser);
 
     const jwtToken = jwtGenerator(newUser.id, newUser.name!);
-    jwtToken && console.log("token generated");
 
     return res.json({ jwtToken });
   } catch (err) {

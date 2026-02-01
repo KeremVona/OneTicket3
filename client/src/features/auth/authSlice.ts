@@ -21,6 +21,7 @@ export interface RegisterPayload {
   name: string;
   email: string;
   password: string;
+  isTechnician: boolean;
 }
 
 const userJson = localStorage.getItem("user");

@@ -63,8 +63,9 @@ const Register = () => {
           <label htmlFor="name">Name</label>
           <input
             type="text"
-            id="username"
             name="name"
+            id="name"
+            autoComplete="name"
             value={formData.name}
             onChange={handleChange}
             required
@@ -72,11 +73,11 @@ const Register = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="name">Are you a technician?</label>
+          <label htmlFor="isTechnician">Are you a technician?</label>
           <input
             type="checkbox"
-            id="username"
             name="isTechnician"
+            id="isTechnician"
             onChange={() =>
               setFormData((prev) => ({
                 ...prev,
@@ -91,8 +92,9 @@ const Register = () => {
           <label htmlFor="email">Email</label>
           <input
             type="text"
-            id="username"
             name="email"
+            id="email"
+            autoComplete="email"
             value={formData.email}
             onChange={handleChange}
             required
@@ -106,6 +108,7 @@ const Register = () => {
               type={showPassword ? "text" : "password"}
               id="password"
               name="password"
+              autoComplete="new-password"
               value={formData.password}
               onChange={handleChange}
               required

@@ -1,6 +1,13 @@
 import { useState } from "react";
 import NewTicketModal from "../components/Home/NewTicketModal";
 import StatusCard from "../components/Home/StatusCard";
+import ActionCenter from "../components/Home/ActionCenter";
+import TicketHistoryFeed from "../components/Home/TicketHistoryFeed";
+
+interface TicketReview {
+  reviewRating: number;
+  reviewComment: string;
+}
 
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
@@ -12,6 +19,8 @@ export default function Home() {
     (t) => t.status === "fixed",
   ).length;
   const resolvedTickets = tickets.filter((t) => t.status === "closed").length;
+
+  const fixedTickets = tickets.filter((t) => t.status === "fixed");
 
   const handleSubmitTicket = (ticketData: any) => {
     const newTicket = {
@@ -25,6 +34,22 @@ export default function Home() {
     setTimeout(() => setShowSuccess(false), 3000);
   };
 
+  const handleCloseTicket = (ticketId: string, review: TicketReview) => {
+    setTickets(
+      tickets.map((t) =>
+        t.id === ticketId
+          ? {
+              ...t,
+              status: "closed",
+              rating: review.reviewRating,
+              feedback: review.reviewComment,
+            }
+          : t,
+      ),
+    );
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 3000);
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 p-8">
       {/* Success Toast */}
@@ -57,7 +82,6 @@ export default function Home() {
             Track your tickets and report technical issues
           </p>
         </div>
-
         {/* Status Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <StatusCard
@@ -126,7 +150,6 @@ export default function Home() {
             textColor="text-white"
           />
         </div>
-
         {/* Main Action Button */}
         <div className="flex justify-center">
           <button
@@ -149,8 +172,11 @@ export default function Home() {
             <span className="text-lg">Report an Issue</span>
           </button>
         </div>
-
-        {/* Debug Info */}
+        <ActionCenter
+          fixedTickets={fixedTickets}
+          onCloseTicket={handleCloseTicket}
+        />
+        <TicketHistoryFeed tickets={tickets} />
         {tickets.length > 0 && (
           <div className="mt-8 bg-white rounded-lg p-4 shadow">
             <h3 className="font-semibold text-gray-800 mb-2">

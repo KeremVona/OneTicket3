@@ -57,12 +57,6 @@ export const submitTicketReview = async (
   reviewData: ReviewData,
 ) => {
   try {
-    //const ticket = await prisma.ticket.findUnique({ where: { id: ticketId } });
-
-    //if (ticket.makerId !== currentUserId) {
-    //  throw new Error("Only the creator can rate this ticket");
-    //}
-
     const updatedTicket = await prisma.ticket.update({
       where: {
         id: ticketId,

@@ -1,0 +1,63 @@
+import axios from "axios";
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+}
+
+export interface Ticket {
+  id: string;
+  title: string;
+  description: string;
+  status: "OPEN" | "IN_PROGRESS" | "FIXED" | "CLOSED";
+  field: "SOFTWARE" | "HARDWARE";
+  makerId: string;
+  assigneeId: string;
+  reviewRating: number;
+  reviewComment: string;
+  madeAt: string;
+  updatedAt: string;
+}
+
+interface TicketPayload {
+  title: string;
+  description: string;
+  field: "SOFTWARE" | "HARDWARE";
+}
+
+interface SubmitReviewBody {
+  ticketId: string;
+  ReviewData: {
+    reviewRating: number;
+    reviewComment: string;
+  };
+}
+
+const API_URL = "http://localhost:5000/api/employee/";
+
+const getTickets = async (): Promise<Ticket[]> => {
+  const response = await axios.get(API_URL + "tickets");
+
+  return response.data;
+};
+
+const makeTicket = async (ticketData: TicketPayload): Promise<Ticket> => {
+  const response = await axios.post(API_URL + "make-ticket", ticketData);
+
+  return response.data;
+};
+
+const submitReview = async (reviewData: SubmitReviewBody): Promise<Ticket> => {
+  const response = await axios.post(API_URL + "submit-review", reviewData);
+
+  return response.data;
+};
+
+const employeeService = {
+  getTickets,
+  submitReview,
+  makeTicket,
+};
+
+export default employeeService;

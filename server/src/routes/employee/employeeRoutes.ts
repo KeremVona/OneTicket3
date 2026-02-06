@@ -7,7 +7,7 @@ import {
 } from "../../controllers/employee/employeeController";
 const router = express.Router();
 
-router.post("/get-tickets", authorize, getTicketsHandler);
+router.get("/tickets", authorize, getTicketsHandler);
 router.post("/make-ticket", authorize, makeTicketHandler);
 router.post("/submit-review", authorize, submitTicketReviewHandler);
 

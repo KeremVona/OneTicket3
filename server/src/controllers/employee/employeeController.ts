@@ -32,6 +32,8 @@ export const getTicketsHandler = async (req: Request, res: Response) => {
       status: { in: ["OPEN", "IN_PROGRESS", "FIXED", "CLOSED"] },
     });
 
+    console.log(tickets);
+
     return res.status(200).send(tickets);
   } catch (error) {
     console.error("Server error - getTicketsHandler - ", error);

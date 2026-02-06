@@ -48,7 +48,9 @@ export const registerHandler = async (
     send.password = bcryptPassword;
     let newUser = await registerUser(send);
 
-    const jwtToken = jwtGenerator(newUser.id, newUser.name!);
+    console.log("User role: ", newUser.role);
+
+    const jwtToken = jwtGenerator(newUser.id, newUser.name!, newUser.role);
 
     return res.json({ jwtToken });
   } catch (err) {
@@ -77,7 +79,7 @@ export const loginHandler = async (
       return res.status(401).json("Invalid pasword");
     }
 
-    const jwtToken = jwtGenerator(user.id, user.name!);
+    const jwtToken = jwtGenerator(user.id, user.name!, user.role);
 
     return res.json({ jwtToken });
   } catch (err) {

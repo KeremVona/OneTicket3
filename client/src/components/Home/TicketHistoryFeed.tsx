@@ -9,7 +9,7 @@ interface Ticket {
   status: "open" | "in_progress" | "fixed" | "closed";
   technician?: string;
   technicianType?: "hardware" | "software";
-  createdAt: string;
+  madeAt: string;
   updatedAt?: string;
 }
 
@@ -372,7 +372,7 @@ const TicketHistoryFeed: React.FC<TicketHistoryFeedProps> = ({
                               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                             />
                           </svg>
-                          <span>Created {getTimeAgo(ticket.createdAt)}</span>
+                          <span>Created {getTimeAgo(ticket.madeAt)}</span>
                         </div>
                       </div>
                     </div>

@@ -1,4 +1,3 @@
-import { Role, Field } from "@prisma/client";
 import { prisma } from "../../prisma";
 
 type Data = {
@@ -8,12 +7,18 @@ type Data = {
   field: "HARDWARE" | "SOFTWARE";
 };
 
+interface ReviewData {
+  reviewRating: number;
+  reviewComment: string;
+}
+
 // Usage examples:
 // const active = await getTickets({ status: { in: ['OPEN', 'IN_PROGRESS'] } });
 // const hardwareOnly = await getTickets({ field: 'HARDWARE' });
-export const getTickets = async (filters = {}) => {
+export const getUserTickets = async (userId: string, filters = {}) => {
   return await prisma.ticket.findMany({
     where: {
+      OR: [{ makerId: userId }, { assigneeId: userId }],
       ...filters,
     },
     orderBy: {
@@ -29,7 +34,7 @@ export const makeTicket = async (data: Data) => {
         title: data.title,
         description: data.description,
         field: data.field, // Must be 'HARDWARE' or 'SOFTWARE'
-        // Connect the ticket to the user who created it
+        // Connect the ticket to the user who made it
         maker: {
           connect: { id: data.userId },
         },
@@ -42,7 +47,37 @@ export const makeTicket = async (data: Data) => {
 
     return newTicket;
   } catch (error) {
-    console.error("Error creating ticket:", error);
+    console.error("Error making ticket:", error);
+    throw error;
+  }
+};
+
+export const submitTicketReview = async (
+  ticketId: string,
+  reviewData: ReviewData,
+) => {
+  try {
+    //const ticket = await prisma.ticket.findUnique({ where: { id: ticketId } });
+
+    //if (ticket.makerId !== currentUserId) {
+    //  throw new Error("Only the creator can rate this ticket");
+    //}
+
+    const updatedTicket = await prisma.ticket.update({
+      where: {
+        id: ticketId,
+      },
+      data: {
+        reviewRating: reviewData.reviewRating,
+        reviewComment: reviewData.reviewComment,
+        status: "CLOSED",
+      },
+    });
+
+    return updatedTicket;
+  } catch (error) {
+    // Prisma throws a P2025 error if the ID doesn't exist
+    console.error("Failed to submit review:", error);
     throw error;
   }
 };

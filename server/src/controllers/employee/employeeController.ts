@@ -1,5 +1,4 @@
 import { type Request, type Response } from "express";
-import { getUserById } from "../../services/authentication/userService";
 import {
   getUserTickets,
   makeTicket,

@@ -1,28 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "./authService";
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-}
-
-export interface AuthResponse {
-  user: User;
-  token: string;
-}
-
-export interface LoginPayload {
-  email: string;
-  password: string;
-}
-
-export interface RegisterPayload {
-  name: string;
-  email: string;
-  password: string;
-  isTechnician: boolean;
-}
+import type { AuthResponse, RegisterPayload, LoginPayload } from "../../b/b1";
+import type { User } from "../employee/employeeService";
 
 const userJson = localStorage.getItem("user");
 const user = userJson ? JSON.parse(userJson) : null;

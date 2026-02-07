@@ -1,38 +1,5 @@
 import axios from "axios";
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-}
-
-export interface Ticket {
-  id: string;
-  title: string;
-  description: string;
-  status: "OPEN" | "IN_PROGRESS" | "FIXED" | "CLOSED";
-  field: "SOFTWARE" | "HARDWARE";
-  makerId: string;
-  assigneeId: string;
-  reviewRating: number;
-  reviewComment: string;
-  madeAt: string;
-  updatedAt: string;
-}
-
-interface TicketPayload {
-  title: string;
-  description: string;
-  field: "SOFTWARE" | "HARDWARE";
-}
-
-interface SubmitReviewBody {
-  ticketId: string;
-  ReviewData: {
-    reviewRating: number;
-    reviewComment: string;
-  };
-}
+import type { TicketPayload, SubmitReviewBody, Ticket } from "../../b/b2";
 
 const API_URL = "http://localhost:5000/api/employee/";
 

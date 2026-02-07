@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 
 interface Ticket {
-  id: number;
+  id: string;
   title: string;
   description: string;
-  category: "hardware" | "software";
-  priority: "low" | "medium" | "high";
-  status: "open" | "in_progress" | "fixed" | "closed";
+  field: "HARDWARE" | "SOFTWARE";
+  status: "OPEN" | "IN_PROGRESS" | "FIXED" | "CLOSED";
   technician?: string;
   technicianType?: "hardware" | "software";
   madeAt: string;
@@ -18,7 +17,7 @@ interface TicketHistoryFeedProps {
   onTicketClick?: (ticket: Ticket) => void;
 }
 
-type StatusType = "open" | "in_progress" | "fixed" | "closed";
+type StatusType = "OPEN" | "IN_PROGRESS" | "FIXED" | "CLOSED";
 
 const TicketHistoryFeed: React.FC<TicketHistoryFeedProps> = ({
   tickets,
@@ -43,32 +42,30 @@ const TicketHistoryFeed: React.FC<TicketHistoryFeedProps> = ({
   // Status badge configuration
   const getStatusConfig = (status: StatusType) => {
     const configs = {
-      open: {
+      OPEN: {
         label: "Open",
         bgColor: "bg-gray-100",
         textColor: "text-gray-700",
         dotColor: "bg-gray-500",
       },
-      in_progress: {
-        label: "In Progress",
-        bgColor: "bg-blue-100",
+      IN_PROGRESS: {
         textColor: "text-blue-700",
         dotColor: "bg-blue-500",
       },
-      fixed: {
+      FIXED: {
         label: "Fixed",
         bgColor: "bg-green-100",
         textColor: "text-green-700",
         dotColor: "bg-green-500",
       },
-      closed: {
+      CLOSED: {
         label: "Closed",
         bgColor: "bg-gray-100",
         textColor: "text-gray-600",
         dotColor: "bg-gray-400",
       },
     };
-    return configs[status] || configs.open;
+    return configs[status] || configs.OPEN;
   };
 
   // Filter and search tickets
@@ -274,12 +271,12 @@ const TicketHistoryFeed: React.FC<TicketHistoryFeedProps> = ({
                       <div className="flex items-center gap-3 mb-2">
                         {/* Status Badge */}
                         <span
-                          className={`inline-flex items-center gap-1.5 px-3 py-1 ${statusConfig.bgColor} ${statusConfig.textColor} rounded-full text-xs font-semibold`}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 rounded-full text-xs font-semibold`}
                         >
                           <span
                             className={`w-2 h-2 rounded-full ${statusConfig.dotColor}`}
                           ></span>
-                          {ticket.status === "closed" && (
+                          {ticket.status === "CLOSED" && (
                             <svg
                               className="w-3 h-3"
                               fill="currentColor"
@@ -292,32 +289,14 @@ const TicketHistoryFeed: React.FC<TicketHistoryFeedProps> = ({
                               />
                             </svg>
                           )}
-                          {statusConfig.label}
+                          Open
                         </span>
 
                         {/* Category Badge */}
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-medium">
-                          {getCategoryIcon(ticket.category)}
-                          {ticket.category}
+                          {getCategoryIcon(ticket.field)}
+                          {ticket.field}
                         </span>
-
-                        {/* Priority Badge (if high) */}
-                        {ticket.priority === "high" && (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">
-                            <svg
-                              className="w-3 h-3"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                            High Priority
-                          </span>
-                        )}
                       </div>
 
                       <h3 className="text-base font-semibold text-gray-800 mb-1 truncate">
@@ -372,7 +351,7 @@ const TicketHistoryFeed: React.FC<TicketHistoryFeedProps> = ({
                               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                             />
                           </svg>
-                          <span>Created {getTimeAgo(ticket.madeAt)}</span>
+                          <span>Made {getTimeAgo(ticket.madeAt)}</span>
                         </div>
                       </div>
                     </div>

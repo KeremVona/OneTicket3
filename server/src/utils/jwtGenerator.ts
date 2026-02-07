@@ -12,7 +12,7 @@ function jwtGenerator(user_id: string, user_name: string, user_role: string) {
     },
   };
 
-  // console.log(user_id, user_name);
+  //console.log(user_id, user_name);
 
   const secret = process.env.Secret;
 

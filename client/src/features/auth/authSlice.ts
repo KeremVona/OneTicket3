@@ -1,7 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "./authService";
-import type { AuthResponse, RegisterPayload, LoginPayload } from "../../b/b1";
-import type { User } from "../employee/employeeService";
+import type {
+  AuthResponse,
+  RegisterPayload,
+  LoginPayload,
+  User,
+} from "../../b/b1";
 
 const userJson = localStorage.getItem("user");
 const user = userJson ? JSON.parse(userJson) : null;

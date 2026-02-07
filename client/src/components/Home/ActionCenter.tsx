@@ -4,8 +4,7 @@ interface Ticket {
   id: string;
   title: string;
   description: string;
-  category: "hardware" | "software";
-  priority: "low" | "medium" | "high";
+  field: "HARDWARE" | "SOFTWARE";
   status: string;
   technician?: string;
   madeAt: string;
@@ -72,7 +71,7 @@ const ReviewCard: React.FC<{
   };
 
   const getCategoryIcon = () => {
-    if (ticket.category === "hardware") {
+    if (ticket.field === "HARDWARE") {
       return (
         <svg
           className="w-5 h-5"
@@ -142,7 +141,7 @@ const ReviewCard: React.FC<{
             <div className="flex items-center gap-2 mb-2">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
                 {getCategoryIcon()}
-                {ticket.category}
+                {ticket.field}
               </span>
             </div>
             <h3 className="text-lg font-bold text-gray-800 mb-1">

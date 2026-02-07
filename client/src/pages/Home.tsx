@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NewTicketModal from "../components/Home/NewTicketModal";
 import StatusCard from "../components/Home/StatusCard";
 import ActionCenter from "../components/Home/ActionCenter";
 import TicketHistoryFeed from "../components/Home/TicketHistoryFeed";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { getTickets } from "../features/employee/employeeSlice";
 
 interface TicketReview {
   reviewRating: number;
@@ -10,17 +12,24 @@ interface TicketReview {
 }
 
 export default function Home() {
+  const dispatch = useAppDispatch();
+
+  const { tickets, isLoading } = useAppSelector((state) => state.employee);
   const [showModal, setShowModal] = useState(false);
-  const [tickets, setTickets] = useState<any[]>([]);
+  //const [tickets, setTickets] = useState<any[]>([]);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const activeTickets = tickets.filter((t) => t.status === "active").length;
+  const activeTickets = tickets.filter((t) => t.status === "OPEN").length;
+  console.log(activeTickets);
   const actionRequiredTickets = tickets.filter(
-    (t) => t.status === "fixed",
+    (t) => t.status === "FIXED",
   ).length;
-  const resolvedTickets = tickets.filter((t) => t.status === "closed").length;
+  const resolvedTickets = tickets.filter((t) => t.status === "CLOSED").length;
+  const fixedTickets = tickets.filter((t) => t.status === "FIXED");
 
-  const fixedTickets = tickets.filter((t) => t.status === "fixed");
+  useEffect(() => {
+    dispatch(getTickets());
+  }, [dispatch]);
 
   const handleSubmitTicket = (ticketData: any) => {
     const newTicket = {
@@ -29,24 +38,24 @@ export default function Home() {
       status: "active",
       createdAt: new Date().toISOString(),
     };
-    setTickets([...tickets, newTicket]);
+    //setTickets([...tickets, newTicket]);
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 3000);
   };
 
   const handleCloseTicket = (ticketId: string, review: TicketReview) => {
-    setTickets(
-      tickets.map((t) =>
-        t.id === ticketId
-          ? {
-              ...t,
-              status: "closed",
-              rating: review.reviewRating,
-              feedback: review.reviewComment,
-            }
-          : t,
-      ),
-    );
+    //setTickets(
+    //  tickets.map((t) =>
+    //    t.id === ticketId
+    //      ? {
+    //          ...t,
+    //          status: "closed",
+    //          rating: review.reviewRating,
+    //          feedback: review.reviewComment,
+    //        }
+    //      : t,
+    //  ),
+    //);
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 3000);
   };
@@ -191,11 +200,8 @@ export default function Home() {
                     key={ticket.id}
                     className="text-sm text-gray-600 border-l-4 border-indigo-500 pl-3 py-1"
                   >
-                    <strong>{ticket.category.toUpperCase()}:</strong>{" "}
+                    <strong>{ticket.field.toUpperCase()}:</strong>
                     {ticket.title}
-                    <span className="text-xs text-gray-500 ml-2">
-                      ({ticket.priority} priority)
-                    </span>
                   </div>
                 ))}
             </div>

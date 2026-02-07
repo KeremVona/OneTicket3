@@ -1,10 +1,8 @@
-import axios from "axios";
-import type { RegisterPayload, AuthResponse, LoginPayload } from "./authSlice";
-
-const API_URL = "http://localhost:5000/api/auth/";
+import API from "../../api/api";
+import type { RegisterPayload, AuthResponse, LoginPayload } from "../../b/b1";
 
 const register = async (userData: RegisterPayload): Promise<AuthResponse> => {
-  const response = await axios.post(API_URL + "register", userData);
+  const response = await API.post("/auth/register", userData);
   if (response.data) {
     localStorage.setItem("user", JSON.stringify(response.data));
   }
@@ -12,7 +10,7 @@ const register = async (userData: RegisterPayload): Promise<AuthResponse> => {
 };
 
 const login = async (userData: LoginPayload): Promise<AuthResponse> => {
-  const response = await axios.post(API_URL + "login", userData);
+  const response = await API.post("/auth/login", userData);
   if (response.data) {
     localStorage.setItem("user", JSON.stringify(response.data));
   }

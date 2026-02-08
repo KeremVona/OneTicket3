@@ -1,7 +1,8 @@
-import express, { type Express, type Request, type Response } from "express";
+import express, { type Express } from "express";
 import cors from "cors";
 import userRoutes from "./routes/authentication/userRoutes";
 import employeeRoutes from "./routes/employee/employeeRoutes";
+import technicianRoutes from "./routes/technician/technicianRoutes";
 
 const app: Express = express();
 
@@ -13,6 +14,7 @@ app.use(cors());
 
 app.use("/api/auth", userRoutes);
 app.use("/api/employee", employeeRoutes);
+app.use("/api/technician", technicianRoutes);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

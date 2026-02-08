@@ -48,11 +48,18 @@ export const registerHandler = async (
     send.password = bcryptPassword;
     let newUser = await registerUser(send);
 
-    console.log("User role: ", newUser.role);
+    if (newUser.field) {
+      const jwtToken = jwtGenerator(
+        newUser.id,
+        newUser.name!,
+        newUser.role,
+        newUser.field,
+      );
 
-    const jwtToken = jwtGenerator(newUser.id, newUser.name!, newUser.role);
-
-    return res.json({ jwtToken });
+      return res.json({ jwtToken });
+    } else {
+      return res.status(400).send("Field is missing");
+    }
   } catch (err) {
     console.error("Server error - registerHandler");
     if (err instanceof Error) {
@@ -79,9 +86,13 @@ export const loginHandler = async (
       return res.status(401).json("Invalid pasword");
     }
 
-    const jwtToken = jwtGenerator(user.id, user.name!, user.role);
+    if (user.field) {
+      const jwtToken = jwtGenerator(user.id, user.name!, user.role, user.field);
 
-    return res.json({ jwtToken });
+      return res.json({ jwtToken });
+    } else {
+      return res.status(400).send("Field is missing");
+    }
   } catch (err) {
     console.error("Server error - loginHandler");
     if (err instanceof Error) {

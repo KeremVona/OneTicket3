@@ -1,0 +1,29 @@
+import ActiveTasks from "../../components/Technician/ActiveTasks";
+import AvailablePool from "../../components/Technician/AvailablePool";
+import TechnicianOverview from "../../components/Technician/TechnicianOverview";
+
+const TechnicianHome = () => {
+  return (
+    <>
+      <TechnicianOverview
+        activeAssignments={5}
+        newInField={2}
+        technicianField="software"
+        weeklyResolutions={4}
+        technicianName="test1"
+      />
+      <AvailablePool
+        technicianField="software"
+        onClaimTicket={() => console.log("click")}
+        tickets={[]}
+      />
+      <ActiveTasks
+        technicianField="software"
+        tickets={[]}
+        onMarkAsFixed={() => console.log("click")}
+      />
+    </>
+  );
+};
+
+export default TechnicianHome;

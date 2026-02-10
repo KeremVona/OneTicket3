@@ -1,12 +1,14 @@
 import React, { useState } from "react";
+import { useAppDispatch } from "../../app/hooks";
+import { makeTicket } from "../../features/employee/employeeSlice";
 
-type Category = "hardware" | "software";
+type Field = "HARDWARE" | "SOFTWARE";
 
 interface NewTicketModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (ticket: {
-    category: Category;
+    category: Field;
     title: string;
     description: string;
   }) => void;
@@ -17,19 +19,22 @@ const NewTicketModal: React.FC<NewTicketModalProps> = ({
   onClose,
   onSubmit,
 }) => {
-  const [category, setCategory] = useState<Category>("hardware");
+  const [category, setField] = useState<Field>("HARDWARE");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const dispatch = useAppDispatch();
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const field = category;
+    dispatch(makeTicket({ title, description, field }));
     onSubmit({ category, title, description });
     // Reset form
     setTitle("");
     setDescription("");
-    setCategory("hardware");
+    setField("HARDWARE");
     onClose();
   };
 
@@ -61,17 +66,17 @@ const NewTicketModal: React.FC<NewTicketModalProps> = ({
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Category Selection */}
+          {/* Field Selection */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-3">
-              Issue Category
+              Issue Field
             </label>
             <div className="grid grid-cols-2 gap-4">
               <button
                 type="button"
-                onClick={() => setCategory("hardware")}
+                onClick={() => setField("HARDWARE")}
                 className={`relative p-6 rounded-xl border-2 transition-all ${
-                  category === "hardware"
+                  category === "HARDWARE"
                     ? "border-indigo-600 bg-indigo-50 shadow-md"
                     : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                 }`}
@@ -79,7 +84,7 @@ const NewTicketModal: React.FC<NewTicketModalProps> = ({
                 <div className="flex flex-col items-center gap-3">
                   <svg
                     className={`w-12 h-12 ${
-                      category === "hardware"
+                      category === "HARDWARE"
                         ? "text-indigo-600"
                         : "text-gray-400"
                     }`}
@@ -96,14 +101,14 @@ const NewTicketModal: React.FC<NewTicketModalProps> = ({
                   </svg>
                   <span
                     className={`font-semibold ${
-                      category === "hardware"
+                      category === "HARDWARE"
                         ? "text-indigo-600"
                         : "text-gray-700"
                     }`}
                   >
-                    Hardware
+                    HARDWARE
                   </span>
-                  {category === "hardware" && (
+                  {category === "HARDWARE" && (
                     <div className="absolute top-3 right-3">
                       <svg
                         className="w-6 h-6 text-indigo-600"
@@ -123,9 +128,9 @@ const NewTicketModal: React.FC<NewTicketModalProps> = ({
 
               <button
                 type="button"
-                onClick={() => setCategory("software")}
+                onClick={() => setField("SOFTWARE")}
                 className={`relative p-6 rounded-xl border-2 transition-all ${
-                  category === "software"
+                  category === "SOFTWARE"
                     ? "border-indigo-600 bg-indigo-50 shadow-md"
                     : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                 }`}
@@ -133,7 +138,7 @@ const NewTicketModal: React.FC<NewTicketModalProps> = ({
                 <div className="flex flex-col items-center gap-3">
                   <svg
                     className={`w-12 h-12 ${
-                      category === "software"
+                      category === "SOFTWARE"
                         ? "text-indigo-600"
                         : "text-gray-400"
                     }`}
@@ -150,14 +155,14 @@ const NewTicketModal: React.FC<NewTicketModalProps> = ({
                   </svg>
                   <span
                     className={`font-semibold ${
-                      category === "software"
+                      category === "SOFTWARE"
                         ? "text-indigo-600"
                         : "text-gray-700"
                     }`}
                   >
-                    Software
+                    SOFTWARE
                   </span>
-                  {category === "software" && (
+                  {category === "SOFTWARE" && (
                     <div className="absolute top-3 right-3">
                       <svg
                         className="w-6 h-6 text-indigo-600"

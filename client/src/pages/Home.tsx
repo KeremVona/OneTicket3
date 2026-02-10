@@ -20,7 +20,6 @@ export default function Home() {
   const [showSuccess, setShowSuccess] = useState(false);
 
   const activeTickets = tickets.filter((t) => t.status === "OPEN").length;
-  console.log(activeTickets);
   const actionRequiredTickets = tickets.filter(
     (t) => t.status === "FIXED",
   ).length;

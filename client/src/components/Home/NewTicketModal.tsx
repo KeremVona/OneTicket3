@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 type Category = "hardware" | "software";
-type Priority = "low" | "medium" | "high";
 
 interface NewTicketModalProps {
   isOpen: boolean;
@@ -10,7 +9,6 @@ interface NewTicketModalProps {
     category: Category;
     title: string;
     description: string;
-    priority: Priority;
   }) => void;
 }
 
@@ -22,18 +20,16 @@ const NewTicketModal: React.FC<NewTicketModalProps> = ({
   const [category, setCategory] = useState<Category>("hardware");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState<Priority>("medium");
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ category, title, description, priority });
+    onSubmit({ category, title, description });
     // Reset form
     setTitle("");
     setDescription("");
     setCategory("hardware");
-    setPriority("medium");
     onClose();
   };
 
@@ -217,43 +213,6 @@ const NewTicketModal: React.FC<NewTicketModalProps> = ({
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow placeholder-gray-400 resize-none"
             />
-          </div>
-
-          {/* Priority */}
-          <div>
-            <label
-              htmlFor="priority"
-              className="block text-sm font-semibold text-gray-700 mb-2"
-            >
-              Priority (Optional)
-            </label>
-            <div className="relative">
-              <select
-                id="priority"
-                value={priority}
-                onChange={(e) => setPriority(e.target.value as Priority)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow appearance-none bg-white cursor-pointer"
-              >
-                <option value="low">Low - Can wait a few days</option>
-                <option value="medium">Medium - Normal response time</option>
-                <option value="high">High - Blocks my work</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
-                <svg
-                  className="w-5 h-5 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </div>
-            </div>
           </div>
 
           {/* Action Buttons */}

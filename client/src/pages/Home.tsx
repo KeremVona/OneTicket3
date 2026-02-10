@@ -186,27 +186,6 @@ export default function Home() {
           onCloseTicket={handleCloseTicket}
         />
         <TicketHistoryFeed tickets={tickets} />
-        {tickets.length > 0 && (
-          <div className="mt-8 bg-white rounded-lg p-4 shadow">
-            <h3 className="font-semibold text-gray-800 mb-2">
-              Recent Tickets (Demo)
-            </h3>
-            <div className="space-y-2">
-              {tickets
-                .slice(-3)
-                .reverse()
-                .map((ticket) => (
-                  <div
-                    key={ticket.id}
-                    className="text-sm text-gray-600 border-l-4 border-indigo-500 pl-3 py-1"
-                  >
-                    <strong>{ticket.field.toUpperCase()}:</strong>
-                    {ticket.title}
-                  </div>
-                ))}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Modal */}

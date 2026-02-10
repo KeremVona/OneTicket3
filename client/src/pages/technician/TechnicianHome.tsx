@@ -1,5 +1,6 @@
 import ActiveTasks from "../../components/Technician/ActiveTasks";
 import AvailablePool from "../../components/Technician/AvailablePool";
+import PastSolutions from "../../components/Technician/PastSolutions";
 import TechnicianOverview from "../../components/Technician/TechnicianOverview";
 
 const TechnicianHome = () => {
@@ -21,6 +22,11 @@ const TechnicianHome = () => {
         technicianField="software"
         tickets={[]}
         onMarkAsFixed={() => console.log("click")}
+      />
+      <PastSolutions
+        technicianField="hardware"
+        technicianId={"fbhahshbf"}
+        tickets={[]}
       />
     </>
   );

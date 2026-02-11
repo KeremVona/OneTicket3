@@ -25,3 +25,7 @@ export interface SubmitReviewBody {
     reviewComment: string;
   };
 }
+
+export interface TicketAssigmentParams {
+  ticketId?: string;
+}

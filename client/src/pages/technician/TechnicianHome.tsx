@@ -3,7 +3,11 @@ import AvailablePool from "../../components/Technician/AvailablePool";
 import PastSolutions from "../../components/Technician/PastSolutions";
 import TechnicianOverview from "../../components/Technician/TechnicianOverview";
 
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+
 const TechnicianHome = () => {
+  //const dispatch = useAppDispatch()
+  //const {} = useAppSelector((state) => state)
   return (
     <>
       <TechnicianOverview

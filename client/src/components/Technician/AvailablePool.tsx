@@ -7,8 +7,8 @@ interface Ticket {
   category: "hardware" | "software";
   priority: "low" | "medium" | "high";
   status: string;
-  creatorName: string;
-  createdAt: string;
+  makerName: string;
+  madeAt: string;
   assigneeId?: number | null;
 }
 
@@ -92,7 +92,7 @@ const AvailablePool: React.FC<AvailablePoolProps> = ({
     )
     .sort((a, b) => {
       // Sort by creation time (oldest first) to prioritize waiting tickets
-      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      return new Date(a.madeAt).getTime() - new Date(b.madeAt).getTime();
     });
 
   // Empty state
@@ -191,7 +191,7 @@ const AvailablePool: React.FC<AvailablePoolProps> = ({
         </div>
 
         {/* Urgency Indicator */}
-        {availableTickets.some((t) => isOldTicket(t.createdAt)) && (
+        {availableTickets.some((t) => isOldTicket(t.madeAt)) && (
           <div className="flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-700 rounded-full text-sm font-medium">
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path
@@ -209,8 +209,8 @@ const AvailablePool: React.FC<AvailablePoolProps> = ({
       <div className="bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="divide-y divide-gray-200">
           {availableTickets.map((ticket) => {
-            const timeElapsed = getTimeElapsed(ticket.createdAt);
-            const isOld = isOldTicket(ticket.createdAt);
+            const timeElapsed = getTimeElapsed(ticket.madeAt);
+            const isOld = isOldTicket(ticket.madeAt);
             const isClaiming = claimingId === ticket.id;
 
             return (
@@ -271,7 +271,7 @@ const AvailablePool: React.FC<AvailablePoolProps> = ({
                         </svg>
                         <span>
                           <strong className="text-gray-700">
-                            {ticket.creatorName}
+                            {ticket.makerName}
                           </strong>
                         </span>
                       </div>

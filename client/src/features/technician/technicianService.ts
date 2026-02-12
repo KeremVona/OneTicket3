@@ -29,7 +29,7 @@ const markTicketFixed = async (
   return response.data;
 };
 
-const getPastWork = async (): Promise<Ticket> => {
+const getPastWork = async (): Promise<Ticket[]> => {
   const response = await API.get("technician/past-work");
 
   return response.data;

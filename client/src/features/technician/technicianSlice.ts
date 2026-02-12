@@ -84,8 +84,8 @@ export const claimTicket = createAsyncThunk<Ticket, TicketAssigmentParams>(
   },
 );
 
-export const employeeSlice = createSlice({
-  name: "employee",
+export const technicianSlice = createSlice({
+  name: "technician",
   initialState,
   reducers: {
     reset: (state) => {
@@ -99,19 +99,38 @@ export const employeeSlice = createSlice({
     builder
 
       // ----------------------
-      // GET TICKETS
+      // GET TECHNICIAN TICKETS
       // ----------------------
-      .addCase(getTickets.pending, (state) => {
+      .addCase(getTechnicianTickets.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
         state.isSuccess = false;
       })
-      .addCase(getTickets.fulfilled, (state, action) => {
+      .addCase(getTechnicianTickets.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.tickets = action.payload;
       })
-      .addCase(getTickets.rejected, (state, action) => {
+      .addCase(getTechnicianTickets.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload as string;
+      })
+
+      // ----------------------
+      // GET PAST WORK
+      // ----------------------
+      .addCase(getPastWork.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+      })
+      .addCase(getPastWork.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.tickets = action.payload;
+      })
+      .addCase(getPastWork.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload as string;

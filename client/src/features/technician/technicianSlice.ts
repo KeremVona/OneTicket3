@@ -84,6 +84,19 @@ export const claimTicket = createAsyncThunk<Ticket, TicketAssigmentParams>(
   },
 );
 
+export const unassignSelf = createAsyncThunk<Ticket, TicketAssigmentParams>(
+  "technician/unassign",
+  async (ticketId, thunkAPI) => {
+    try {
+      return await technicianService.unassignSelf(ticketId);
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message || error.message || error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  },
+);
+
 export const technicianSlice = createSlice({
   name: "technician",
   initialState,
@@ -137,30 +150,30 @@ export const technicianSlice = createSlice({
       })
 
       // ----------------------
-      // MAKE TICKET
+      // MARK TICKET FIXED
       // ----------------------
-      .addCase(makeTicket.pending, (state) => {
+      .addCase(markTicketFixed.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(makeTicket.fulfilled, (state, action) => {
+      .addCase(markTicketFixed.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
 
         state.tickets.unshift(action.payload);
       })
-      .addCase(makeTicket.rejected, (state, action) => {
+      .addCase(markTicketFixed.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload as string;
       })
 
       // ----------------------
-      // SUBMIT REVIEW
+      // CLAIM TICKET
       // ----------------------
-      .addCase(submitReview.pending, (state) => {
+      .addCase(claimTicket.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(submitReview.fulfilled, (state, action) => {
+      .addCase(claimTicket.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
 
@@ -172,13 +185,27 @@ export const technicianSlice = createSlice({
           state.tickets[index] = action.payload;
         }
       })
-      .addCase(submitReview.rejected, (state, action) => {
+
+      // ----------------------
+      // UNASSIGN SELF
+      // ----------------------
+      .addCase(unassignSelf.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(unassignSelf.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        state.isSuccess = true;
+
+        const index = state.tickets.findIndex(
+          (ticket) => ticket.id === action.payload.id,
+        );
+
+        if (index !== -1) {
+          state.tickets[index] = action.payload;
+        }
       });
   },
 });
 
-export const { reset } = employeeSlice.actions;
-export default employeeSlice.reducer;
+export const { reset } = technicianSlice.actions;
+export default technicianSlice.reducer;

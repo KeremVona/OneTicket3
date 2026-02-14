@@ -1,12 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import technicianService from "./technicianService";
 import type { User } from "../../b/b1";
-import type {
-  Ticket,
-  TicketPayload,
-  TicketAssigmentParams,
-  SubmitReviewBody,
-} from "../../b/b2";
+import type { Ticket, TicketAssigmentParams } from "../../b/b2";
 
 interface TechnicianState {
   tickets: Ticket[];
@@ -154,12 +149,19 @@ export const technicianSlice = createSlice({
       // ----------------------
       .addCase(markTicketFixed.pending, (state) => {
         state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
       })
       .addCase(markTicketFixed.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
 
-        state.tickets.unshift(action.payload);
+        const index = state.tickets.findIndex(
+          (ticket) => ticket.id === action.payload.id,
+        );
+        if (index !== -1) {
+          state.tickets[index] = action.payload;
+        }
       })
       .addCase(markTicketFixed.rejected, (state, action) => {
         state.isLoading = false;
@@ -172,6 +174,8 @@ export const technicianSlice = createSlice({
       // ----------------------
       .addCase(claimTicket.pending, (state) => {
         state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
       })
       .addCase(claimTicket.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -180,10 +184,14 @@ export const technicianSlice = createSlice({
         const index = state.tickets.findIndex(
           (ticket) => ticket.id === action.payload.id,
         );
-
         if (index !== -1) {
           state.tickets[index] = action.payload;
         }
+      })
+      .addCase(claimTicket.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload as string;
       })
 
       // ----------------------
@@ -191,6 +199,8 @@ export const technicianSlice = createSlice({
       // ----------------------
       .addCase(unassignSelf.pending, (state) => {
         state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
       })
       .addCase(unassignSelf.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -199,13 +209,16 @@ export const technicianSlice = createSlice({
         const index = state.tickets.findIndex(
           (ticket) => ticket.id === action.payload.id,
         );
-
         if (index !== -1) {
           state.tickets[index] = action.payload;
         }
+      })
+      .addCase(unassignSelf.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload as string;
       });
   },
 });
-
 export const { reset } = technicianSlice.actions;
 export default technicianSlice.reducer;
